@@ -21,7 +21,7 @@ def minColors(map_):
  
     for country, neighbours in map_.items():
         found_color = False
-        for color in range(1, 4):
+        for color in range(1, 5):
             if checkNeighbours(neighbours, color, colors):
                 found_color = True
                 colors[country] = color
@@ -29,9 +29,8 @@ def minColors(map_):
  
         if not found_color:
             return None
-
+   
     return max(colors.values())
 
 createMap()
 print(minColors(map_))
-
