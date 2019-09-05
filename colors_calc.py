@@ -1,36 +1,83 @@
-#!/usr/bin/python
- # -*- coding: utf-8 -*-
-map_ = {}
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+Entrada:
+1) QUANTIDADE DE PAÍSES
+2) PAÍS E OS VIZINHOS (A PRIMEIRA LETRA É REFERENTE AO PAÍS O RESTO SÃO OS VIZINHOS)
+
+Exemplo de entrada:
+6		
+A B C D
+B A D E F
+C A D
+D C A B
+E B
+F B
+'''
 def createMap():
-    i = int(input("Quantidade de países: "))
+    graph = {}
+    i = int(input())
     for i in range(i):
-        country = input("Digite o nome do %d país: " %(i+1))
-        map_[country] = []
-        print("Digite o nome dos países vizinhos: \t(-1 para sair): ")
-        while True:
-            neighbour = input()
-            if neighbour == "-1":
-                break
-            map_[country].append(neighbour)
+        temp = input().split(' ')
+        country = temp[0]
+        del temp[0]
+        graph[country] = temp
+    return graph
 
-def checkNeighbours(nodes, color, colors):
-        return all(color != colors.get(n) for n in nodes)
+def getGrades(graph):
+    grades = {}
+    for country in graph:
+        grades[country] = len(graph[country])
+    return grades
 
-def minColors(map_):
-    colors = {}
- 
-    for country, neighbours in map_.items():
-        found_color = False
-        for color in range(1, 5):
-            if checkNeighbours(neighbours, color, colors):
-                found_color = True
-                colors[country] = color
-                break
- 
-        if not found_color:
-            return None
-   
-    return max(colors.values())
+def nextNode(graph, grades, colored, availableColors):
+    maxGrade = 0
+    adjacentColors = 0
+    maxNode = None
+    colors = []
 
-createMap()
-print(minColors(map_))
+    for key, value in grades.items():
+        painted = 0
+        if maxGrade <= value:
+            colors = availableColors.copy()
+            painted += getAdjacentColor(graph, key, colored, colors)
+            if adjacentColors <= painted:
+                maxGrade = value
+                maxNode = key
+
+    return [maxNode, colors[0]]
+
+def getAdjacentColor(graph, key, colored, colors):
+    painted = 0
+    for nb in graph[key]:
+        if nb in colored:
+            painted += 1
+            try:
+                index = colors.index(colored[nb])
+                del colors[index]
+            except:
+                pass
+
+    return painted
+
+def color(graph):
+    colors = [1, 2, 3, 4]
+    colored = {}
+    grades = getGrades(graph)
+    while grades:
+        currentNode, color = nextNode(graph, grades, colored, colors)
+        colored[currentNode] = color
+        del grades[currentNode]
+    return colored
+
+def main():
+    graph = createMap() 
+    print(color(graph))
+    values = color(graph).values()
+    print("Número de cores: ")
+    print(max(values))
+
+main()
+
+
+    
