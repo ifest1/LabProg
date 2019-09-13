@@ -21,9 +21,6 @@ def BFS():
         if flag:
             v = q.get()
             stack.append(v)
-        
-        print(stack)
-
         if v == destiny:
             return stack
 
@@ -41,7 +38,4 @@ def BFS():
                 q.put(w)
 
 
-
-print(graph)
-#print(edges)
 print(BFS())
